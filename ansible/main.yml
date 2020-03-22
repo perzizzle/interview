@@ -5,6 +5,14 @@
   gather_facts: false
 
   tasks:
+  - name: Create /opt/helloworld
+    file:
+      state: directory
+      path: "{{ app_root }}"
+      owner: "{{ app_owner }}"
+      mode: "0775"
+    become: true
+
   - name: Copy application to app folder
     copy:
         src: "artifact/helloworld.zip"
@@ -32,10 +40,10 @@
   - name: Restart application
     service:
       name: helloworld
-      state: stopped
+      state: restarted
     become: true
 
   - name: Check health of application
     uri:
-      url: http://{{ inventory_hostname }}:9000
+      url: http://{{ inventory_hostname }}:{{ app_port_number }}
       status_code: 200
