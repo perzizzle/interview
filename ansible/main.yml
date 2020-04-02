@@ -47,3 +47,47 @@
     uri:
       url: http://{{ inventory_hostname }}:{{ app_port_number }}
       status_code: 200
+
+  - name: Create /opt/consul
+    file:
+      state: directory
+      path: "{{ item }}"
+      owner: "{{ app_owner }}"
+      mode: "0775"
+    become: true
+    with_items:
+      - /opt/consul
+      - /opt/consul/config
+
+  - name: Unzip consul
+    unarchive:
+        src: "artifact/consul.zip"
+        dest: "/opt/consul"
+        mode: 0775
+
+  - name: Copy consul systemd configuration to app server
+    copy:
+        src: "files/consul.service"
+        dest: /etc/systemd/system/consul.service
+    become: true
+
+  - name: Start consul service
+    service:
+      name: consul
+      state: started
+    become: true
+
+  - name: Render consul service config file
+    template:
+      src: templates/consul_service.json.j2
+      dest: /opt/consul/config/helloworld.json
+
+  - name: Reload consul service
+    service:
+      name: consul
+      state: reloaded
+    become: true
+
+  - name: Get all healthy instances of helloworld
+    uri:
+      url: "http://localhost:8500/v1/health/service/{{ app_name }}"
