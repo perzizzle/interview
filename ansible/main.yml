@@ -32,7 +32,7 @@
   - name: Restart application
     service:
       name: helloworld
-      state: stopped
+      state: restart
     become: true
 
   - name: Check health of application
