@@ -4,6 +4,7 @@ We have a simple hello world flask application we want to deploy. There is an ex
  
 ### Notes:
 * To get started clone all files into /var/save from https://github.com/perzizzle/interview.git
+* To prepare the environment execute /var/save/setup.sh
 * The ansible folder contains the main.yml and extra_vars.yml needed for executing the playbook. Running command.sh will execute the playbook.
 * Only main.yml needs to be edited, there are no issues with the application.
 * The artifact folder contains the application we are going to deploy as a zip file (helloworld.zip).
